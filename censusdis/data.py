@@ -7,9 +7,9 @@ it wraps in a pythonic manner.
 """
 
 import warnings
+from dataclasses import dataclass
 from logging import getLogger
 from typing import Dict, Iterable, List, Mapping, Optional, Tuple, Union
-from dataclasses import dataclass
 
 import geopandas as gpd
 import numpy as np
@@ -17,13 +17,11 @@ import pandas as pd
 
 import censusdis.geography as cgeo
 import censusdis.maps as cmap
-from censusdis.values import ALL_SPECIAL_VALUES
 from censusdis.impl.exceptions import CensusApiException
 from censusdis.impl.fetch import data_from_url
 from censusdis.impl.varcache import VariableCache
 from censusdis.impl.varsource.base import VintageType
 from censusdis.impl.varsource.censusapi import CensusApiVariableSource
-
 
 logger = getLogger(__name__)
 

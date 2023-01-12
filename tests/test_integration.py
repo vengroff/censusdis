@@ -14,11 +14,11 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 
+import censusdis.data as ced
 import censusdis.impl.exceptions
 import censusdis.impl.varsource.censusapi
-import censusdis.data as ced
-import censusdis.values as cev
 import censusdis.maps as cem
+import censusdis.values as cev
 from censusdis.states import (
     ALL_STATES_AND_DC,
     STATE_CA,
@@ -121,31 +121,41 @@ class DownloadTestCase(unittest.TestCase):
             self._dataset,
             self._year,
             ["NAME", median_income_variable],
-            state=STATE_GA, tract="*",
+            state=STATE_GA,
+            tract="*",
         )
 
         df_nan = ced.download(
             self._dataset,
             self._year,
             ["NAME", median_income_variable],
-            state=STATE_GA, tract="*",
-            set_to_nan=cev.ALL_SPECIAL_VALUES
+            state=STATE_GA,
+            tract="*",
+            set_to_nan=cev.ALL_SPECIAL_VALUES,
         )
 
         self.assertEqual(df_raw.shape, df_nan.shape)
 
-        self.assertTrue((df_raw[median_income_variable] == cev.INSUFFICIENT_SAMPLE_OBSERVATIONS).any())
-        self.assertFalse((df_nan[median_income_variable] == cev.INSUFFICIENT_SAMPLE_OBSERVATIONS).any())
+        self.assertTrue(
+            (
+                df_raw[median_income_variable] == cev.INSUFFICIENT_SAMPLE_OBSERVATIONS
+            ).any()
+        )
+        self.assertFalse(
+            (
+                df_nan[median_income_variable] == cev.INSUFFICIENT_SAMPLE_OBSERVATIONS
+            ).any()
+        )
 
         self.assertFalse(df_raw[median_income_variable].isna().any())
         self.assertTrue(df_nan[median_income_variable].isna().any())
 
         self.assertTrue(
             (
-                (df_raw[median_income_variable] == cev.INSUFFICIENT_SAMPLE_OBSERVATIONS) ==
-                df_nan[median_income_variable].isna()
+                (df_raw[median_income_variable] == cev.INSUFFICIENT_SAMPLE_OBSERVATIONS)
+                == df_nan[median_income_variable].isna()
             ).all(),
-            "All locations that were cev.INSUFFICIENT_SAMPLE_OBSERVATIONS should be NaN."
+            "All locations that were cev.INSUFFICIENT_SAMPLE_OBSERVATIONS should be NaN.",
         )
 
     def test_download_with_geometry_county(self):
